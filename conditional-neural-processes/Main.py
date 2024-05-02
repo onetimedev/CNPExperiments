@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 import datetime
 from DeterministicModel import DeterministicModel as Model
 from GPCurvesReader import GPCurvesReader as GP
-
-
+from GP import GP as GaussianProcess
 
 def plot_functions(target_x, target_y, context_x, context_y, pred_y, var):
     """Plots the predicted mean and variance and the context points.
@@ -65,15 +64,12 @@ TRAINING_ITERATIONS = int(2e5)
 MAX_CONTEXt_POINTS = 10
 torch.manual_seed(0)
 
+
+gp_test = GaussianProcess(length_scale=0.4, amplitude=1)
+tr = gp_test.build_conditional_dist()
+
 # Train dataset
 gp_train = GP(batch_size=64, max_num_context=MAX_CONTEXt_POINTS)
-gpt = gp_train.generate_curves()
-(context_xr, context_yr), target_xr = gpt.query
-
-cxr = context_xr.numpy()[0]
-cyr = context_yr.numpy()[0]
-target_yr = gpt.target_y.numpy()
-
 # Test dataset
 gp_test = GP(batch_size=100, max_num_context=MAX_CONTEXt_POINTS, testing=True)
 

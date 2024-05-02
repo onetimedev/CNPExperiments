@@ -7,7 +7,7 @@ import collections
 import matplotlib.pyplot as plt
 import datetime
 
-CNPRegressionDescription = collections.namedtuple("CNPRegressionDescription", ("query", "target_y"))
+CNPRegressionDescription = collections.namedtuple("CNPRegressionDescription", ("context_set", "target_set"))
 
 class GPCurvesReader(object):
     """
@@ -117,7 +117,7 @@ class GPCurvesReader(object):
             # The arithmetic operation first scales the values to be within the range [0,4] and subtracting 2 shifts them
             # to be in the range [-2, 2]
             x_values = (torch.rand((self._batch_size, num_total_points, self._x_size)) * 4 -2)
-            tr = 0
+
 
             # Set kernel parameters
         # Creates a 3d tensor of '1s' and then scales it by the self._l1_scale.
@@ -167,6 +167,7 @@ class GPCurvesReader(object):
             context_x = x_values[:, :num_context, :]
             context_y = y_values[:, :num_context, :]
 
-        query = ((context_x, context_y), target_x)
+        context_set = (context_x, context_y)
+        target_set = (target_x, target_y)
 
-        return CNPRegressionDescription(query=query, target_y=target_y)
+        return CNPRegressionDescription(context_set=context_set, target_set=target_set)
